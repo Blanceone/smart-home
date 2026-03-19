@@ -1,0 +1,74 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+.nyc_output/
+
+# Production
+dist/
+build/
+
+# Misc
+.DS_Store
+*.pem
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db
+ehthumbs.db
+
+# Logs
+logs/
+*.log
+
+# Android
+app/.gradle/
+app/app/build/
+app/build/
+app/local.properties
+app/.idea/
+app/*.iml
+app/app/*.iml
+*.apk
+*.ap_
+*.aab
+
+# Kotlin
+*.class
+*.jar
+
+# Gradle
+.gradle/
+gradle-app.setting
+!gradle-wrapper.jar
+
+# TypeScript
+*.tsbuildinfo
+
+# Prisma
+server/prisma/*.db
+server/prisma/*.db-journal
+
+# Uploads
+uploads/

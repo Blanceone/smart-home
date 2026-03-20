@@ -4,9 +4,9 @@
 
 | 项目名称 | 智能家居方案定制APP |
 |---------|-------------------|
-| 文档版本 | V1.0 |
+| 文档版本 | V1.1 |
 | 创建日期 | 2026-03-18 |
-| 更新日期 | 2026-03-18 |
+| 更新日期 | 2026-03-20 |
 | 运维工程师 | DevOps Engineer |
 | 文档状态 | 正式版 |
 
@@ -264,20 +264,40 @@ docker-compose exec app npx prisma studio
 代码推送 → GitHub Actions → 构建 Docker 镜像 → SSH 部署 → 服务重启
 ```
 
-### 5.2 触发条件
+### 5.2 后端部署流程
 
-- 推送到 `main` 分支
+**触发条件**: 推送到 `main` 分支
+
+**Workflow 文件**: `.github/workflows/deploy.yml`
+
+| 步骤 | 说明 |
+|------|------|
+| 代码检查 | ESLint + TypeScript 类型检查 |
+| 单元测试 | Jest 测试覆盖率 |
+| 构建镜像 | Docker 镜像构建 |
+| SSH 部署 | 连接服务器，拉取最新代码 |
+| 服务重启 | Docker Compose 重启服务 |
+| 健康检查 | 验证服务是否正常启动 |
+
+### 5.3 Android APK 构建流程
+
+**触发条件**: 
+- 推送到 `main` 分支且 `app/**` 目录有变更
 - 手动触发 workflow
 
-### 5.3 部署流程
+**Workflow 文件**: `.github/workflows/android.yml`
 
-1. **代码检查**: ESLint + TypeScript 类型检查
-2. **单元测试**: Jest 测试
-3. **构建镜像**: Docker 镜像构建
-4. **推送镜像**: 推送到 Docker Hub (可选)
-5. **SSH 部署**: 连接服务器，拉取最新代码
-6. **服务重启**: Docker Compose 重启服务
-7. **健康检查**: 验证服务是否正常启动
+| 步骤 | 说明 |
+|------|------|
+| 环境准备 | JDK 17 + Gradle 8.2 |
+| 构建 Debug APK | 用于测试的调试版本 |
+| 构建 Release APK | 用于发布的正式版本 |
+| 上传 Artifact | APK 保存 30 天 |
+
+**下载 APK**:
+1. 访问 https://github.com/Blanceone/smart-home/actions
+2. 点击最新的 **Build Android APK** workflow
+3. 在 **Artifacts** 区域下载 `app-debug` 或 `app-release`
 
 ---
 

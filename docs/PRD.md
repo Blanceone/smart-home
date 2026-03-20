@@ -20,7 +20,7 @@
 
 ### 1.2 产品定位
 
-面向年轻用户的智能家居方案定制工具，通过AI技术为用户提供专业、个性化的智能家居装修方案和设备推荐清单。
+面向年轻用户的跨平台智能家居方案定制应用，支持Android、iOS和Web平台。通过AI技术为用户提供专业、个性化的智能家居装修方案和设备推荐清单。
 
 ### 1.3 核心价值
 
@@ -689,12 +689,32 @@ APP页面结构
 
 ### 6.3 兼容性要求
 
+#### 6.3.1 Android平台
+
 | 项目 | 要求 |
 |------|------|
-| Android版本 | Android 7.0及以上 |
+| Android版本 | Android 5.0（API Level 21）及以上 |
 | 屏幕尺寸 | 支持主流手机屏幕尺寸（5.0-7.0英寸） |
 | 屏幕方向 | 仅支持竖屏 |
 | 网络环境 | 支持WiFi和移动数据网络 |
+
+#### 6.3.2 iOS平台
+
+| 项目 | 要求 |
+|------|------|
+| iOS版本 | iOS 11.0及以上 |
+| 设备类型 | iPhone（不支持iPad单独适配） |
+| 屏幕方向 | 仅支持竖屏 |
+| 网络环境 | 支持WiFi和移动数据网络 |
+
+#### 6.3.3 Web平台
+
+| 项目 | 要求 |
+|------|------|
+| 浏览器支持 | Chrome 80+、Safari 13+、Firefox 75+、Edge 80+ |
+| 屏幕适配 | 响应式设计，支持手机浏览器访问 |
+| 屏幕方向 | 仅支持竖屏 |
+| 网络环境 | 需要网络连接 |
 
 ### 6.4 安全性要求
 
@@ -719,19 +739,27 @@ APP页面结构
 
 ### 7.1 技术选型建议
 
-#### 7.1.1 客户端
+#### 7.1.1 跨平台客户端
 
 | 技术 | 说明 |
 |------|------|
-| 开发语言 | Kotlin（推荐）或 Java |
-| 最低SDK版本 | Android 7.0（API Level 24） |
-| 架构模式 | MVVM + Clean Architecture |
-| UI框架 | Jetpack Compose（推荐）或 XML |
-| 网络请求 | Retrofit + OkHttp |
-| 图片加载 | Coil 或 Glide |
-| 数据存储 | Room Database + SharedPreferences |
-| 依赖注入 | Hilt 或 Koin |
-| 异步处理 | Kotlin Coroutines + Flow |
+| 开发框架 | Flutter 3.x（推荐） |
+| 开发语言 | Dart |
+| 架构模式 | BLoC / Provider + Clean Architecture |
+| 状态管理 | flutter_bloc / riverpod |
+| 网络请求 | Dio + Retrofit |
+| 图片加载 | cached_network_image |
+| 本地存储 | SharedPreferences + Hive / SQLite |
+| 路由管理 | go_router / auto_route |
+| PDF生成 | pdf + printing 插件 |
+| UI组件库 | Material Design 3 / Cupertino |
+
+**Flutter优势**：
+- 一套代码支持Android、iOS、Web多平台
+- 性能接近原生应用
+- UI一致性强，支持苹果风格设计
+- 热重载，开发效率高
+- 丰富的插件生态
 
 #### 7.1.2 服务端
 
@@ -753,9 +781,11 @@ APP页面结构
 
 ### 7.3 数据同步策略
 
-- 用户数据实时同步到服务端
+- 用户数据本地优先存储，支持离线使用
 - 方案数据支持离线缓存
-- 网络恢复后自动同步数据
+- Web端数据通过浏览器本地存储（LocalStorage/IndexedDB）
+- 移动端数据通过本地数据库存储
+- 网络恢复后自动同步数据到云端（可选）
 
 ---
 
@@ -907,9 +937,10 @@ APP页面结构
 
 ### 12.2 参考文档
 
+- Flutter官方文档
+- Dart语言文档
 - DeepSeek API文档
 - 淘宝开放平台API文档
-- Android开发官方文档
 
 ---
 

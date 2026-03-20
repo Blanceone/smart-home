@@ -12,10 +12,7 @@ export class HouseLayoutController {
 
   @Post('house-layout')
   @ApiOperation({ summary: '保存户型信息' })
-  async saveHouseLayout(
-    @CurrentUser('userId') userId: string,
-    @Body() dto: SaveHouseLayoutDto,
-  ) {
+  async saveHouseLayout(@CurrentUser('userId') userId: string, @Body() dto: SaveHouseLayoutDto) {
     return this.houseLayoutService.saveHouseLayout(userId, dto);
   }
 

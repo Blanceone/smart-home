@@ -132,9 +132,7 @@ describe('AuthService', () => {
     it('should throw error if user not found', async () => {
       mockPrismaService.user.findUnique.mockResolvedValue(null);
 
-      await expect(service.getCurrentUser('non-existent')).rejects.toThrow(
-        '用户不存在',
-      );
+      await expect(service.getCurrentUser('non-existent')).rejects.toThrow('用户不存在');
     });
   });
 });

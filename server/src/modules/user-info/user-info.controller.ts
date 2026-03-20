@@ -12,10 +12,7 @@ export class UserInfoController {
 
   @Post('info')
   @ApiOperation({ summary: '保存用户信息' })
-  async saveUserInfo(
-    @CurrentUser('userId') userId: string,
-    @Body() dto: SaveUserInfoDto,
-  ) {
+  async saveUserInfo(@CurrentUser('userId') userId: string, @Body() dto: SaveUserInfoDto) {
     return this.userInfoService.saveUserInfo(userId, dto);
   }
 

@@ -18,10 +18,7 @@ export class UserController {
 
   @Patch('me')
   @ApiOperation({ summary: '更新当前用户信息' })
-  async updateCurrentUser(
-    @CurrentUser('userId') userId: string,
-    @Body() dto: UpdateUserDto,
-  ) {
+  async updateCurrentUser(@CurrentUser('userId') userId: string, @Body() dto: UpdateUserDto) {
     return this.userService.updateCurrentUser(userId, dto);
   }
 

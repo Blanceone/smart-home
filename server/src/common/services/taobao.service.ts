@@ -39,9 +39,9 @@ export class TaobaoService {
   private sign(params: Record<string, string>): string {
     const sortedParams = Object.keys(params)
       .sort()
-      .map(key => `${key}${params[key]}`)
+      .map((key) => `${key}${params[key]}`)
       .join('');
-    
+
     return crypto
       .createHmac('md5', this.appSecret)
       .update(sortedParams)
@@ -52,7 +52,7 @@ export class TaobaoService {
   private async callTaobaoApi(method: string, params: Record<string, string>): Promise<any> {
     const now = new Date();
     const timestamp = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
-    
+
     const commonParams = {
       app_key: this.appKey,
       method: method,
@@ -66,16 +66,12 @@ export class TaobaoService {
     allParams.sign = this.sign(allParams);
 
     try {
-      const response = await axios.post(
-        'https://gw.api.taobao.com/router/rest',
-        allParams,
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          timeout: 10000,
-        }
-      );
+      const response = await axios.post('https://gw.api.taobao.com/router/rest', allParams, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        timeout: 10000,
+      });
       return response.data;
     } catch (error) {
       console.error('Taobao API call failed:', error.message);
@@ -86,12 +82,13 @@ export class TaobaoService {
   async getItemDetail(itemId: string): Promise<TaobaoItemDetail | null> {
     const params = {
       method: 'taobao.tbk.item.info.get',
-      fields: 'item_id,title,pict_url,reserve_price,zk_final_price,coupon_amount,coupon_start_time,coupon_end_time,commission_rate',
+      fields:
+        'item_id,title,pict_url,reserve_price,zk_final_price,coupon_amount,coupon_start_time,coupon_end_time,commission_rate',
       item_id: itemId,
     };
 
     const result = await this.callTaobaoApi('taobao.tbk.item.info.get', params);
-    
+
     if (result && result.tbk_item_info_get_response) {
       return result.tbk_item_info_get_response.results;
     }
@@ -107,29 +104,22 @@ export class TaobaoService {
     };
 
     const result = await this.callTaobaoApi('taobao.tbk.item.convert', params);
-    
+
     let clickUrl = '';
     if (result && result.tbk_item_convert_response && result.tbk_item_convert_response.results) {
       clickUrl = result.tbk_item_convert_response.results[0]?.click_url || '';
     }
 
     const itemDetail = await this.getItemDetail(itemId);
-    
-    const originalPrice = itemDetail 
-      ? parseFloat(itemDetail.reserve_price) 
-      : 0;
-    
-    const finalPrice = itemDetail 
-      ? parseFloat(itemDetail.zk_final_price) 
-      : originalPrice;
-    
-    const couponAmount = itemDetail && itemDetail.coupon_amount 
-      ? parseFloat(itemDetail.coupon_amount) 
-      : 0;
-    
-    const commissionRate = itemDetail 
-      ? parseFloat(itemDetail.commission_rate) / 10000 
-      : 0;
+
+    const originalPrice = itemDetail ? parseFloat(itemDetail.reserve_price) : 0;
+
+    const finalPrice = itemDetail ? parseFloat(itemDetail.zk_final_price) : originalPrice;
+
+    const couponAmount =
+      itemDetail && itemDetail.coupon_amount ? parseFloat(itemDetail.coupon_amount) : 0;
+
+    const commissionRate = itemDetail ? parseFloat(itemDetail.commission_rate) / 10000 : 0;
 
     if (!clickUrl) {
       clickUrl = `https://s.click.taobao.com/${itemId}`;
@@ -148,7 +138,8 @@ export class TaobaoService {
   async searchItems(keyword: string, page: number = 1, pageSize: number = 20): Promise<any> {
     const params = {
       method: 'taobao.tbk.item.get',
-      fields: 'num_iid,title,pict_url,reserve_price,zk_final_price,commission_rate,commission_volume',
+      fields:
+        'num_iid,title,pict_url,reserve_price,zk_final_price,commission_rate,commission_volume',
       q: keyword,
       page_no: page.toString(),
       page_size: pageSize.toString(),
@@ -156,7 +147,7 @@ export class TaobaoService {
     };
 
     const result = await this.callTaobaoApi('taobao.tbk.item.get', params);
-    
+
     if (result && result.tbk_item_get_response) {
       return result.tbk_item_get_response.results;
     }

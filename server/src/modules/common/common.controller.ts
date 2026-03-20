@@ -108,10 +108,7 @@ export class CommonController {
   @Get('uploads/pdf/:filename')
   @SkipAuth()
   @ApiOperation({ summary: '下载PDF文件' })
-  async downloadPdf(
-    @Param('filename') filename: string,
-    @Res() res: Response
-  ) {
+  async downloadPdf(@Param('filename') filename: string, @Res() res: Response) {
     const uploadDir = process.env.UPLOAD_DIR || path.join(process.cwd(), 'uploads', 'pdf');
     const filePath = path.join(uploadDir, filename);
 
@@ -122,7 +119,7 @@ export class CommonController {
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename=${encodeURIComponent(filename)}`);
-    
+
     const fileStream = fs.createReadStream(filePath);
     fileStream.pipe(res);
   }

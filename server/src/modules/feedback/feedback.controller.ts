@@ -1,11 +1,7 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { FeedbackService } from './feedback.service';
-import {
-  SchemeRatingDto,
-  SuggestionDto,
-  DataCorrectionDto,
-} from './dto/feedback.dto';
+import { SchemeRatingDto, SuggestionDto, DataCorrectionDto } from './dto/feedback.dto';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
 @ApiTags('反馈模块')
@@ -16,19 +12,13 @@ export class FeedbackController {
 
   @Post('scheme-rating')
   @ApiOperation({ summary: '提交方案评价' })
-  async submitSchemeRating(
-    @CurrentUser('userId') userId: string,
-    @Body() dto: SchemeRatingDto,
-  ) {
+  async submitSchemeRating(@CurrentUser('userId') userId: string, @Body() dto: SchemeRatingDto) {
     return this.feedbackService.submitSchemeRating(userId, dto);
   }
 
   @Post('suggestion')
   @ApiOperation({ summary: '提交意见反馈' })
-  async submitSuggestion(
-    @CurrentUser('userId') userId: string,
-    @Body() dto: SuggestionDto,
-  ) {
+  async submitSuggestion(@CurrentUser('userId') userId: string, @Body() dto: SuggestionDto) {
     return this.feedbackService.submitSuggestion(userId, dto);
   }
 

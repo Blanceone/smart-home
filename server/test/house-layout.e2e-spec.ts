@@ -22,7 +22,7 @@ describe('House Layout API (e2e)', () => {
     await app.init();
 
     testDeviceId = 'f6g7h8i9j0k1l2m3';
-    
+
     const user = await prisma.user.create({
       data: {
         deviceId: testDeviceId,
@@ -155,9 +155,7 @@ describe('House Layout API (e2e)', () => {
     });
 
     it('should fail without authentication', async () => {
-      await request(app.getHttpServer())
-        .get('/users/me/house-layout')
-        .expect(401);
+      await request(app.getHttpServer()).get('/users/me/house-layout').expect(401);
     });
   });
 });

@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
@@ -25,19 +20,19 @@ function cleanOldEntries() {
 
 function checkRateLimit(deviceId: string): boolean {
   cleanOldEntries();
-  
+
   const now = Date.now();
   const record = requestCounts.get(deviceId);
-  
+
   if (!record || now > record.resetTime) {
     requestCounts.set(deviceId, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
     return true;
   }
-  
+
   if (record.count >= RATE_LIMIT_MAX_REQUESTS) {
     return false;
   }
-  
+
   record.count++;
   return true;
 }

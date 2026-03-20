@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, BadRequestException, ServiceUnavailableException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { PrismaService } from '../../common/prisma/prisma.service';
 import { GenerateSchemeDto } from './dto/scheme.dto';
 import { ConfigService } from '@nestjs/config';
@@ -63,7 +68,7 @@ export class SchemeService {
     }
 
     let aiResponse: AIResponse;
-    
+
     try {
       aiResponse = await this.callDeepSeekAPI(userInfo, houseLayout, dto.budget);
     } catch (error) {
@@ -85,18 +90,16 @@ export class SchemeService {
     if (aiResponse.devices && aiResponse.devices.length > 0) {
       const existingDevices = await this.prisma.device.findMany({
         where: {
-          name: { in: aiResponse.devices.map(d => d.name) },
-          brand: { in: aiResponse.devices.map(d => d.brand) },
+          name: { in: aiResponse.devices.map((d) => d.name) },
+          brand: { in: aiResponse.devices.map((d) => d.brand) },
         },
       });
 
-      const existingDeviceMap = new Map(
-        existingDevices.map(d => [`${d.name}-${d.brand}`, d])
-      );
+      const existingDeviceMap = new Map(existingDevices.map((d) => [`${d.name}-${d.brand}`, d]));
 
       const devicesToCreate = aiResponse.devices
-        .filter(d => !existingDeviceMap.has(`${d.name}-${d.brand}`))
-        .map(d => ({
+        .filter((d) => !existingDeviceMap.has(`${d.name}-${d.brand}`))
+        .map((d) => ({
           name: d.name,
           brand: d.brand,
           category: d.category,
@@ -112,31 +115,33 @@ export class SchemeService {
 
         const newDevices = await this.prisma.device.findMany({
           where: {
-            name: { in: devicesToCreate.map(d => d.name) },
-            brand: { in: devicesToCreate.map(d => d.brand) },
+            name: { in: devicesToCreate.map((d) => d.name) },
+            brand: { in: devicesToCreate.map((d) => d.brand) },
           },
         });
 
-        newDevices.forEach(d => {
+        newDevices.forEach((d) => {
           existingDeviceMap.set(`${d.name}-${d.brand}`, d);
         });
       }
 
-      const schemeDevicesData = aiResponse.devices.map((deviceRec, index) => {
-        const device = existingDeviceMap.get(`${deviceRec.name}-${deviceRec.brand}`);
-        if (!device) {
-          return null;
-        }
-        return {
-          schemeId: scheme.id,
-          deviceId: device.id,
-          roomName: deviceRec.roomName,
-          quantity: deviceRec.quantity,
-          price: device.price,
-          recommendReason: deviceRec.recommendReason,
-          sortOrder: index,
-        };
-      }).filter((sd): sd is NonNullable<typeof sd> => sd !== null);
+      const schemeDevicesData = aiResponse.devices
+        .map((deviceRec, index) => {
+          const device = existingDeviceMap.get(`${deviceRec.name}-${deviceRec.brand}`);
+          if (!device) {
+            return null;
+          }
+          return {
+            schemeId: scheme.id,
+            deviceId: device.id,
+            roomName: deviceRec.roomName,
+            quantity: deviceRec.quantity,
+            price: device.price,
+            recommendReason: deviceRec.recommendReason,
+            sortOrder: index,
+          };
+        })
+        .filter((sd): sd is NonNullable<typeof sd> => sd !== null);
 
       if (schemeDevicesData.length > 0) {
         await this.prisma.schemeDevice.createMany({
@@ -268,7 +273,7 @@ export class SchemeService {
     return new Promise((resolve, reject) => {
       const doc = new PDFDocument({ margin: 50 });
       const writeStream = fs.createWriteStream(filePath);
-      
+
       doc.pipe(writeStream);
 
       doc.fontSize(24).text('智能家居方案', { align: 'center' });
@@ -283,7 +288,7 @@ export class SchemeService {
       if (decorationGuide) {
         doc.fontSize(18).text('装修指南', { underline: true });
         doc.moveDown();
-        
+
         if (decorationGuide.summary) {
           doc.fontSize(12).text(decorationGuide.summary);
           doc.moveDown();
@@ -292,7 +297,7 @@ export class SchemeService {
         if (decorationGuide.rooms && decorationGuide.rooms.length > 0) {
           doc.fontSize(14).text('房间详情:');
           doc.moveDown(0.5);
-          
+
           for (const room of decorationGuide.rooms) {
             doc.fontSize(12).text(`• ${room.name}:`);
             doc.text(`  布局: ${room.layout}`);
@@ -320,20 +325,20 @@ export class SchemeService {
         doc.moveDown(2);
         doc.fontSize(18).text('设备清单', { underline: true });
         doc.moveDown();
-        
+
         let totalPrice = 0;
         scheme.schemeDevices.forEach((sd, index) => {
           const device = sd.device;
           const itemTotal = Number(device.price) * sd.quantity;
           totalPrice += itemTotal;
-          
+
           doc.fontSize(12).text(`${index + 1}. ${device.name} (${device.brand})`);
           doc.text(`   类别: ${device.category}`);
           doc.text(`   价格: ¥${device.price} × ${sd.quantity} = ¥${itemTotal}`);
           doc.text(`   说明: ${device.description || '无'}`);
           doc.moveDown(0.5);
         });
-        
+
         doc.moveDown();
         doc.fontSize(14).text(`设备总价: ¥${totalPrice}`);
       }
@@ -361,10 +366,7 @@ export class SchemeService {
     budget: number,
   ): Promise<AIResponse> {
     const apiKey = this.configService.get<string>('DEEPSEEK_API_KEY');
-    const baseUrl = this.configService.get<string>(
-      'DEEPSEEK_BASE_URL',
-      'https://api.deepseek.com',
-    );
+    const baseUrl = this.configService.get<string>('DEEPSEEK_BASE_URL', 'https://api.deepseek.com');
 
     if (!apiKey) {
       throw new ServiceUnavailableException('AI服务暂不可用，请稍后再试');
@@ -400,11 +402,11 @@ export class SchemeService {
 
     const content = response.data.choices[0].message.content;
     const result = JSON.parse(content);
-    
+
     if (!result.devices || !result.decorationGuide) {
       throw new ServiceUnavailableException('AI响应格式错误，请稍后再试');
     }
-    
+
     return result;
   }
 
@@ -444,10 +446,7 @@ export class SchemeService {
 `;
   }
 
-  private getDefaultScheme(
-    budget: number,
-    houseLayout: any,
-  ): AIResponse {
+  private getDefaultScheme(budget: number, houseLayout: any): AIResponse {
     const rooms = houseLayout.rooms || [{ name: '客厅', area: 30 }];
     const devices: DeviceRecommendation[] = [];
 
@@ -497,9 +496,7 @@ export class SchemeService {
         rooms: rooms.map((room: any) => ({
           name: room.name,
           layout: `建议在${room.name}安装智能设备`,
-          devices: devices
-            .filter((d) => d.roomName === room.name)
-            .map((d) => d.name),
+          devices: devices.filter((d) => d.roomName === room.name).map((d) => d.name),
           installationPoints: ['请预留电源插座'],
           notes: '注意设备安装位置',
         })),

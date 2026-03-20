@@ -75,9 +75,7 @@ describe('DeviceController', () => {
     it('should return paginated device list', async () => {
       const dto = { page: 1, pageSize: 10 };
       const expectedResult = {
-        list: [
-          { id: 'device-1', name: 'Smart Light', brand: 'Xiaomi', price: 199 },
-        ],
+        list: [{ id: 'device-1', name: 'Smart Light', brand: 'Xiaomi', price: 199 }],
         pagination: { page: 1, pageSize: 10, total: 1, totalPages: 1 },
       };
 

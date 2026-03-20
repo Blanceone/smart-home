@@ -53,7 +53,7 @@ export class DeviceService {
           device.taobaoItemId,
           device.name,
         );
-        
+
         await this.prisma.device.update({
           where: { id: deviceId },
           data: {

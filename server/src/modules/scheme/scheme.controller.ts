@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Delete,
-  Body,
-  Param,
-} from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { SchemeService } from './scheme.service';
 import { GenerateSchemeDto } from './dto/scheme.dto';
@@ -19,10 +12,7 @@ export class SchemeController {
 
   @Post('generate')
   @ApiOperation({ summary: '生成方案' })
-  async generateScheme(
-    @CurrentUser('userId') userId: string,
-    @Body() dto: GenerateSchemeDto,
-  ) {
+  async generateScheme(@CurrentUser('userId') userId: string, @Body() dto: GenerateSchemeDto) {
     return this.schemeService.generateScheme(userId, dto);
   }
 
@@ -37,19 +27,13 @@ export class SchemeController {
 
   @Post(':schemeId/save')
   @ApiOperation({ summary: '保存方案' })
-  async saveScheme(
-    @Param('schemeId') schemeId: string,
-    @CurrentUser('userId') userId: string,
-  ) {
+  async saveScheme(@Param('schemeId') schemeId: string, @CurrentUser('userId') userId: string) {
     return this.schemeService.saveScheme(schemeId, userId);
   }
 
   @Delete(':schemeId')
   @ApiOperation({ summary: '删除方案' })
-  async deleteScheme(
-    @Param('schemeId') schemeId: string,
-    @CurrentUser('userId') userId: string,
-  ) {
+  async deleteScheme(@Param('schemeId') schemeId: string, @CurrentUser('userId') userId: string) {
     return this.schemeService.deleteScheme(schemeId, userId);
   }
 

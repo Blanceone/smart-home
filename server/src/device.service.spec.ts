@@ -77,9 +77,7 @@ describe('DeviceService', () => {
     it('should throw NotFoundException if device not found', async () => {
       mockPrismaService.device.findUnique.mockResolvedValue(null);
 
-      await expect(service.getDeviceDetail('non-existent')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.getDeviceDetail('non-existent')).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -92,8 +90,22 @@ describe('DeviceService', () => {
       };
 
       const mockDevices = [
-        { id: 'device-1', name: 'Smart Light 1', brand: 'Xiaomi', category: 'Lighting', price: 199, imageUrl: null },
-        { id: 'device-2', name: 'Smart Light 2', brand: 'Yeelight', category: 'Lighting', price: 299, imageUrl: null },
+        {
+          id: 'device-1',
+          name: 'Smart Light 1',
+          brand: 'Xiaomi',
+          category: 'Lighting',
+          price: 199,
+          imageUrl: null,
+        },
+        {
+          id: 'device-2',
+          name: 'Smart Light 2',
+          brand: 'Yeelight',
+          category: 'Lighting',
+          price: 299,
+          imageUrl: null,
+        },
       ];
 
       mockPrismaService.device.findMany.mockResolvedValue(mockDevices);
@@ -209,9 +221,7 @@ describe('DeviceService', () => {
     it('should throw NotFoundException if device not found', async () => {
       mockPrismaService.device.findUnique.mockResolvedValue(null);
 
-      await expect(service.getDevicePurchaseUrl('non-existent')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.getDevicePurchaseUrl('non-existent')).rejects.toThrow(NotFoundException);
     });
   });
 });

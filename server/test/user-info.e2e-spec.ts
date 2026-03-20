@@ -21,7 +21,7 @@ describe('User Info API (e2e)', () => {
     await app.init();
 
     testDeviceId = 'e5f6g7h8i9j0k1l2';
-    
+
     const user = await prisma.user.create({
       data: {
         deviceId: testDeviceId,
@@ -133,9 +133,7 @@ describe('User Info API (e2e)', () => {
     });
 
     it('should fail without authentication', async () => {
-      await request(app.getHttpServer())
-        .get('/users/me/info')
-        .expect(401);
+      await request(app.getHttpServer()).get('/users/me/info').expect(401);
     });
   });
 });

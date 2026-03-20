@@ -22,7 +22,7 @@ describe('Scheme API (e2e)', () => {
     await app.init();
 
     testDeviceId = 'b2c3d4e5f6g7h8i9';
-    
+
     const user = await prisma.user.create({
       data: {
         deviceId: testDeviceId,
@@ -191,9 +191,7 @@ describe('Scheme API (e2e)', () => {
     });
 
     it('should fail without authentication', async () => {
-      await request(app.getHttpServer())
-        .get('/users/me/schemes')
-        .expect(401);
+      await request(app.getHttpServer()).get('/users/me/schemes').expect(401);
     });
   });
 

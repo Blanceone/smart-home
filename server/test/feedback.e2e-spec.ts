@@ -23,7 +23,7 @@ describe('Feedback API (e2e)', () => {
     await app.init();
 
     testDeviceId = 'd4e5f6g7h8i9j0k1';
-    
+
     const user = await prisma.user.create({
       data: {
         deviceId: testDeviceId,

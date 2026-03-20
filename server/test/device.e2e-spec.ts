@@ -22,7 +22,7 @@ describe('Device API (e2e)', () => {
     await app.init();
 
     testDeviceId = 'c3d4e5f6g7h8i9j0';
-    
+
     const user = await prisma.user.create({
       data: {
         deviceId: testDeviceId,
@@ -76,9 +76,7 @@ describe('Device API (e2e)', () => {
     });
 
     it('should fail without authentication', async () => {
-      await request(app.getHttpServer())
-        .get(`/devices/${testDeviceRecordId}`)
-        .expect(401);
+      await request(app.getHttpServer()).get(`/devices/${testDeviceRecordId}`).expect(401);
     });
   });
 
@@ -149,9 +147,7 @@ describe('Device API (e2e)', () => {
     });
 
     it('should fail without authentication', async () => {
-      await request(app.getHttpServer())
-        .get('/devices')
-        .expect(401);
+      await request(app.getHttpServer()).get('/devices').expect(401);
     });
   });
 

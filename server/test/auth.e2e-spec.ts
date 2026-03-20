@@ -103,9 +103,7 @@ describe('Auth API (e2e)', () => {
     });
 
     it('should fail without device ID', async () => {
-      const response = await request(app.getHttpServer())
-        .get('/users/me')
-        .expect(401);
+      const response = await request(app.getHttpServer()).get('/users/me').expect(401);
 
       expect(response.body.message).toContain('缺少设备ID');
     });

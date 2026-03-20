@@ -85,17 +85,17 @@ describe('SchemeService', () => {
     it('should throw NotFoundException if scheme not found', async () => {
       mockPrismaService.scheme.findFirst.mockResolvedValue(null);
 
-      await expect(
-        service.getSchemeDetail('non-existent', 'user-123'),
-      ).rejects.toThrow(NotFoundException);
+      await expect(service.getSchemeDetail('non-existent', 'user-123')).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('should throw NotFoundException if scheme belongs to another user', async () => {
       mockPrismaService.scheme.findFirst.mockResolvedValue(null);
 
-      await expect(
-        service.getSchemeDetail('scheme-123', 'different-user'),
-      ).rejects.toThrow(NotFoundException);
+      await expect(service.getSchemeDetail('scheme-123', 'different-user')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -144,9 +144,7 @@ describe('SchemeService', () => {
 
       mockPrismaService.scheme.count.mockResolvedValue(3);
 
-      await expect(service.saveScheme(schemeId, userId)).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.saveScheme(schemeId, userId)).rejects.toThrow(BadRequestException);
     });
   });
 

@@ -6,8 +6,7 @@ from decimal import Decimal
 from celery.result import AsyncResult
 from app.core.database import get_db
 from app.modules.scheme.schemas import (
-    SchemeGenerateRequest, SchemeResponse, SchemeDetailResponse,
-    TaskResponse, AISchemeResponse, AIDeviceItem, ProductMatchRequest, ProductMatchResponse
+    SchemeGenerateRequest, AISchemeResponse, AIDeviceItem, ProductMatchRequest
 )
 from app.shared.schema import success_response, error_response
 from celery_tasks.generation import generate_scheme_task

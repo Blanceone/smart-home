@@ -5,6 +5,7 @@ import '../../core/constants/app_theme.dart';
 import '../../shared/models/house.dart';
 import '../../shared/widgets/app_button.dart';
 import '../../shared/widgets/app_input.dart';
+import '../questionnaire/questionnaire_page.dart';
 
 class HouseInputPage extends StatefulWidget {
   final House? house;
@@ -98,10 +99,23 @@ class _HouseInputPageState extends State<HouseInputPage> {
 
     if (mounted) {
       setState(() => _isLoading = false);
-      Navigator.of(context).pop();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_isEditing ? '户型更新成功' : '户型创建成功')),
-      );
+      if (_isEditing) {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('户型更新成功')),
+        );
+      } else {
+        final savedHouse = appState.houses.isNotEmpty ? appState.houses.last : null;
+        if (savedHouse != null) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (_) => QuestionnairePage(house: savedHouse),
+            ),
+          );
+        } else {
+          Navigator.of(context).pop();
+        }
+      }
     }
   }
 

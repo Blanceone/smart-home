@@ -1,9 +1,82 @@
 import json
 import httpx
 from decimal import Decimal
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session, sessionmaker
 from app.celery_app import celery_app
 from app.core.config import settings
+
+
+def get_db_session() -> Session:
+    engine = create_engine(settings.DATABASE_URL, pool_pre_ping=True)
+    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    return SessionLocal()
+
+
+def get_matching_products(device_type: str, budget_max: float, preferred_brands: List[str], excluded_brands: List[str], limit: int = 5) -> Optional[Dict]:
+    db = get_db_session()
+    try:
+        from app.modules.product.models import Product, Brand, Category
+
+        category_map = {
+            "light": ["灯具", "照明", "灯"],
+            "curtain": ["窗帘", "卷帘"],
+            "speaker": ["音箱", "音响", "语音"],
+            "sensor": ["传感器", "感应"],
+            "camera": ["摄像头", "摄像机", "监控"],
+            "lock": ["门锁", "锁"],
+            "switch": ["开关", "面板"],
+            "air": ["空调", "净化", "新风"]
+        }
+
+        query = db.query(Product).filter(Product.status == 1)
+
+        keyword_list = category_map.get(device_type.lower(), [device_type])
+        name_filter = None
+        for kw in keyword_list:
+            if name_filter is None:
+                name_filter = Product.product_name.like(f"%{kw}%")
+            else:
+                name_filter = name_filter | Product.product_name.like(f"%{kw}%")
+
+        if name_filter:
+            query = query.filter(name_filter)
+
+        if budget_max > 0:
+            query = query.filter(Product.price <= budget_max)
+
+        if preferred_brands:
+            brand_ids = db.query(Brand.id).filter(Brand.brand_name.in_(preferred_brands)).all()
+            brand_ids = [b[0] for b in brand_ids]
+            if brand_ids:
+                query = query.filter(Product.brand_id.in_(brand_ids))
+
+        if excluded_brands:
+            brand_ids = db.query(Brand.id).filter(Brand.brand_name.in_(excluded_brands)).all()
+            brand_ids = [b[0] for b in brand_ids]
+            if brand_ids:
+                query = query.filter(~Product.brand_id.in_(brand_ids))
+
+        product = query.order_by(Product.rating.desc(), Product.sales_count.desc()).first()
+
+        if product:
+            return {
+                "product_id": product.id,
+                "product_name": product.product_name,
+                "brand_id": product.brand_id,
+                "brand_name": product.brand.brand_name if product.brand else None,
+                "price": float(product.price),
+                "image_url": product.image_url,
+                "specs": product.specs
+            }
+
+        return None
+    except Exception as e:
+        print(f"Error querying products: {e}")
+        return None
+    finally:
+        db.close()
 
 
 @celery_app.task(bind=True, max_retries=2)
@@ -167,60 +240,40 @@ def match_products_api(devices: List[Dict], params: Dict[str, Any]) -> List[Dict
     preferred_brands = params.get("preferred_brands", [])
     excluded_brands = params.get("excluded_brands", [])
 
-    mock_products = {
-        "light": [
-            {"name": "米家智能LED灯泡", "brand": "小米", "price": 79},
-            {"name": "Philips智能灯泡", "brand": "飞利浦", "price": 129},
-            {"name": "Yeelight智能灯带", "brand": "Yeelight", "price": 149},
-        ],
-        "curtain": [
-            {"name": "小米智能窗帘", "brand": "小米", "price": 499},
-            {"name": "Aqara智能窗帘电机", "brand": "绿米", "price": 599},
-        ],
-        "speaker": [
-            {"name": "小爱音箱Pro", "brand": "小米", "price": 199},
-            {"name": "小度智能音箱", "brand": "百度", "price": 299},
-        ],
-        "sensor": [
-            {"name": "米家温湿度传感器", "brand": "小米", "price": 49},
-            {"name": "Aqara人体传感器", "brand": "绿米", "price": 89},
-        ],
-        "camera": [
-            {"name": "小米智能摄像机", "brand": "小米", "price": 199},
-            {"name": "萤石智能摄像机", "brand": "海康威视", "price": 299},
-        ],
-        "lock": [
-            {"name": "小米智能门锁", "brand": "小米", "price": 999},
-            {"name": "德施曼智能门锁", "brand": "德施曼", "price": 1499},
-        ],
-        "switch": [
-            {"name": "小米智能开关", "brand": "小米", "price": 89},
-            {"name": "Aqara智能墙壁开关", "brand": "绿米", "price": 149},
-        ],
-        "air": [
-            {"name": "米家空调伴侣", "brand": "小米", "price": 149},
-            {"name": "智能空气净化器", "brand": "小米", "price": 699},
-        ]
-    }
-
     matched = []
     for device in devices:
         device_type = device.get("device_type", "light").lower()
         quantity = device.get("quantity", 1)
+        unit_price = device.get("subtotal", 99)
 
-        products = mock_products.get(device_type, mock_products["light"])
-        product = products[0] if products else {"name": device.get("device_name", "智能设备"), "brand": "未知", "price": 99}
+        product_info = get_matching_products(device_type, budget_max / max(quantity, 1), preferred_brands, excluded_brands, limit=3)
 
-        matched.append({
-            "device_type": device_type,
-            "device_name": device.get("device_name", product["name"]),
-            "room": device.get("room", "客厅"),
-            "quantity": quantity,
-            "reason": device.get("reason", "性价比高"),
-            "subtotal": product["price"] * quantity,
-            "brand_name": product["brand"],
-            "price": product["price"]
-        })
+        if product_info:
+            matched.append({
+                "device_type": device_type,
+                "device_name": product_info["product_name"],
+                "room": device.get("room", "客厅"),
+                "quantity": quantity,
+                "reason": device.get("reason", "性价比高"),
+                "subtotal": product_info["price"] * quantity,
+                "brand_name": product_info.get("brand_name"),
+                "price": product_info["price"],
+                "product_id": product_info.get("product_id"),
+                "image_url": product_info.get("image_url")
+            })
+        else:
+            matched.append({
+                "device_type": device_type,
+                "device_name": device.get("device_name", "智能设备"),
+                "room": device.get("room", "客厅"),
+                "quantity": quantity,
+                "reason": device.get("reason", "性价比高"),
+                "subtotal": unit_price * quantity,
+                "brand_name": None,
+                "price": unit_price,
+                "product_id": None,
+                "image_url": None
+            })
 
     return matched
 

@@ -5,6 +5,9 @@ from app.shared.exceptions import register_exception_handlers
 from app.modules.product.routes import router as product_router, brand_router, category_router
 from app.modules.scheme.routes import router as scheme_router
 from app.modules.house.routes import router as house_router
+from app.modules.product.models import Brand, Category, Product
+from app.modules.scheme.models import Scheme, SchemeDevice, Task
+from app.modules.house.models import House, Room
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -13,11 +16,15 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
+origins = settings.ALLOWED_ORIGINS.split(",") if settings.ALLOWED_ORIGINS else ["*"]
+if settings.is_production and "*" in origins:
+    raise ValueError("Wildcard '*' origin is not allowed in production. Configure ALLOWED_ORIGINS properly.")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.ALLOWED_ORIGINS.split(",") if hasattr(settings, 'ALLOWED_ORIGINS') else ["*"],
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -30,6 +37,11 @@ app.include_router(category_router)
 app.include_router(scheme_router)
 
 
+@app.get("/health")
+def health_check():
+    return {"status": "healthy"}
+
+
 @app.get("/")
 def root():
     return {
@@ -37,8 +49,3 @@ def root():
         "version": settings.APP_VERSION,
         "status": "running"
     }
-
-
-@app.get("/health")
-def health_check():
-    return {"status": "healthy"}

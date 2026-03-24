@@ -310,7 +310,7 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
                   ),
                   keyboardType: TextInputType.number,
                   onChanged: (value) {
-                    _preferences.budgetMin = double.tryParse(value);
+                    _preferences.budgetMin = double.tryParse(value) ?? 0.0;
                   },
                 ),
               ),
@@ -327,7 +327,7 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
                   ),
                   keyboardType: TextInputType.number,
                   onChanged: (value) {
-                    _preferences.budgetMax = double.tryParse(value);
+                    _preferences.budgetMax = double.tryParse(value) ?? 0.0;
                   },
                 ),
               ),

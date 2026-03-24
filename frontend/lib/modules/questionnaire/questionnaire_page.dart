@@ -348,21 +348,21 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
               spacing: AppSpacing.sm,
               runSpacing: AppSpacing.sm,
               children: _brands.map((brand) {
-                final isSelected = _preferences.preferredBrands?.contains(brand.name) ?? false;
+                final isSelected = _preferences.preferredBrands?.contains(brand.brandName) ?? false;
                 return FilterChip(
-                  label: Text(brand.name),
+                  label: Text(brand.brandName),
                   selected: isSelected,
                   onSelected: (selected) {
                     setState(() {
                       _preferences.preferredBrands ??= [];
                       if (selected) {
-                        _preferences.preferredBrands!.add(brand.name);
+                        _preferences.preferredBrands!.add(brand.brandName);
                       } else {
-                        _preferences.preferredBrands!.remove(brand.name);
+                        _preferences.preferredBrands!.remove(brand.brandName);
                       }
                     });
                   },
-                  selectedColor: AppColors.primary.withOpacity(0.2),
+                  selectedColor: AppColors.primary.withValues(alpha: 0.2),
                   checkmarkColor: AppColors.primary,
                 );
               }).toList(),
@@ -382,21 +382,21 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
               spacing: AppSpacing.sm,
               runSpacing: AppSpacing.sm,
               children: _brands.map((brand) {
-                final isSelected = _preferences.excludedBrands?.contains(brand.name) ?? false;
+                final isSelected = _preferences.excludedBrands?.contains(brand.brandName) ?? false;
                 return FilterChip(
-                  label: Text(brand.name),
+                  label: Text(brand.brandName),
                   selected: isSelected,
                   onSelected: (selected) {
                     setState(() {
                       _preferences.excludedBrands ??= [];
                       if (selected) {
-                        _preferences.excludedBrands!.add(brand.name);
+                        _preferences.excludedBrands!.add(brand.brandName);
                       } else {
-                        _preferences.excludedBrands!.remove(brand.name);
+                        _preferences.excludedBrands!.remove(brand.brandName);
                       }
                     });
                   },
-                  selectedColor: AppColors.error.withOpacity(0.2),
+                  selectedColor: AppColors.error.withValues(alpha: 0.2),
                   checkmarkColor: AppColors.error,
                 );
               }).toList(),
@@ -459,7 +459,7 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: isSelected ? color.withOpacity(0.1) : Colors.white,
+          color: isSelected ? color.withValues(alpha: 0.1) : Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.card),
           border: Border.all(
             color: isSelected ? color : AppColors.gray200,

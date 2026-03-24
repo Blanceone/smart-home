@@ -224,7 +224,7 @@ class LoggerService {
       final request = http.MultipartRequest('POST', uri);
 
       request.headers['X-Device-ID'] = _deviceId ?? 'unknown';
-      request.files.add(await http.MultipartFile.fromFile(
+      request.files.add(await http.MultipartFile.fromPath(
         zipFile.path,
         filename: zipFile.path.split('/').last,
       ));

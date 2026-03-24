@@ -1,5 +1,3 @@
-import 'product.dart';
-
 class Scheme {
   String id;
   String? houseId;

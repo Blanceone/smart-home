@@ -362,7 +362,7 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
                       }
                     });
                   },
-                  selectedColor: AppColors.primary.withValues(alpha: 0.2),
+                  selectedColor: AppColors.primary.withOpacity(0.2),
                   checkmarkColor: AppColors.primary,
                 );
               }).toList(),
@@ -396,7 +396,7 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
                       }
                     });
                   },
-                  selectedColor: AppColors.error.withValues(alpha: 0.2),
+                  selectedColor: AppColors.error.withOpacity(0.2),
                   checkmarkColor: AppColors.error,
                 );
               }).toList(),
@@ -459,7 +459,7 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: isSelected ? color.withValues(alpha: 0.1) : Colors.white,
+          color: isSelected ? color.withOpacity(0.1) : Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.card),
           border: Border.all(
             color: isSelected ? color : AppColors.gray200,

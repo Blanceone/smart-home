@@ -1,0 +1,341 @@
+{
+  "summary": {
+    "base_url": "http://8.137.174.58",
+    "duration": 49.34894,
+    "passed": 47,
+    "failed": 0,
+    "total": 47,
+    "timestamp": "2026-03-24T21:50:11.968499"
+  },
+  "results": [
+    {
+      "test": "健康检查",
+      "status": "PASS",
+      "message": "服务正常运行",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:23.290498"
+    },
+    {
+      "test": "根路径",
+      "status": "PASS",
+      "message": "API信息: Smart Home API v1.0.0",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:23.656759"
+    },
+    {
+      "test": "API契约-统一响应格式",
+      "status": "PASS",
+      "message": "包含code/message/timestamp",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:24.102710"
+    },
+    {
+      "test": "API契约-message字段",
+      "status": "PASS",
+      "message": "message字段存在",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:24.102884"
+    },
+    {
+      "test": "API契约-timestamp字段",
+      "status": "PASS",
+      "message": "timestamp字段存在",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:24.102985"
+    },
+    {
+      "test": "API契约-数据结构",
+      "status": "PASS",
+      "message": "data为数组类型",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:24.103095"
+    },
+    {
+      "test": "品牌列表-code",
+      "status": "PASS",
+      "message": "成功返回7个品牌",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:24.469240"
+    },
+    {
+      "test": "品牌列表-完整性",
+      "status": "PASS",
+      "message": "包含所有预期品牌",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:24.469509"
+    },
+    {
+      "test": "分类列表-code",
+      "status": "PASS",
+      "message": "成功返回6个分类",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:24.873643"
+    },
+    {
+      "test": "分类列表-完整性",
+      "status": "PASS",
+      "message": "包含所有预期分类",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:24.873847"
+    },
+    {
+      "test": "商品列表-code",
+      "status": "PASS",
+      "message": "成功返回20个商品",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:25.339517"
+    },
+    {
+      "test": "商品列表-分页",
+      "status": "PASS",
+      "message": "page=1, total=20",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:25.339696"
+    },
+    {
+      "test": "户型列表-架构合规",
+      "status": "PASS",
+      "message": "无需认证即可访问(符合v1.1)",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:25.779026"
+    },
+    {
+      "test": "户型列表-功能",
+      "status": "PASS",
+      "message": "返回19个户型",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:25.779261"
+    },
+    {
+      "test": "户型创建-架构合规",
+      "status": "PASS",
+      "message": "无需认证即可创建(符合v1.1)",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:26.197749"
+    },
+    {
+      "test": "户型创建-功能",
+      "status": "PASS",
+      "message": "创建成功: 20",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:26.197949"
+    },
+    {
+      "test": "方案生成-异步模式",
+      "status": "PASS",
+      "message": "任务ID: d031f106-1b22-4e5a-af42-d3438fc814cf",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:26.698297"
+    },
+    {
+      "test": "方案任务状态-#1",
+      "status": "PASS",
+      "message": "状态: started",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:27.167103"
+    },
+    {
+      "test": "方案任务状态-#2",
+      "status": "PASS",
+      "message": "状态: started",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:29.548074"
+    },
+    {
+      "test": "方案任务状态-#3",
+      "status": "PASS",
+      "message": "状态: started",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:31.943902"
+    },
+    {
+      "test": "方案任务状态-#4",
+      "status": "PASS",
+      "message": "状态: started",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:34.338265"
+    },
+    {
+      "test": "方案任务状态-#5",
+      "status": "PASS",
+      "message": "状态: started",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:36.730418"
+    },
+    {
+      "test": "方案任务状态-#6",
+      "status": "PASS",
+      "message": "状态: started",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:39.112635"
+    },
+    {
+      "test": "方案任务状态-#7",
+      "status": "PASS",
+      "message": "状态: started",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:41.500402"
+    },
+    {
+      "test": "方案任务状态-#8",
+      "status": "PASS",
+      "message": "状态: started",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:43.861281"
+    },
+    {
+      "test": "方案任务状态-#9",
+      "status": "PASS",
+      "message": "状态: started",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:46.218764"
+    },
+    {
+      "test": "方案任务状态-#10",
+      "status": "PASS",
+      "message": "状态: started",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:48.645305"
+    },
+    {
+      "test": "方案任务状态-#11",
+      "status": "PASS",
+      "message": "状态: started",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:51.023863"
+    },
+    {
+      "test": "方案任务状态-#12",
+      "status": "PASS",
+      "message": "状态: started",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:53.417895"
+    },
+    {
+      "test": "方案任务状态-#13",
+      "status": "PASS",
+      "message": "状态: started",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:55.818426"
+    },
+    {
+      "test": "方案任务状态-#14",
+      "status": "PASS",
+      "message": "状态: started",
+      "details": null,
+      "timestamp": "2026-03-24T21:49:58.202463"
+    },
+    {
+      "test": "方案任务状态-#15",
+      "status": "PASS",
+      "message": "状态: started",
+      "details": null,
+      "timestamp": "2026-03-24T21:50:00.579383"
+    },
+    {
+      "test": "方案任务状态-#16",
+      "status": "PASS",
+      "message": "状态: started",
+      "details": null,
+      "timestamp": "2026-03-24T21:50:02.939573"
+    },
+    {
+      "test": "方案任务状态-#17",
+      "status": "PASS",
+      "message": "状态: started",
+      "details": null,
+      "timestamp": "2026-03-24T21:50:05.358020"
+    },
+    {
+      "test": "方案任务状态-#18",
+      "status": "PASS",
+      "message": "状态: started",
+      "details": null,
+      "timestamp": "2026-03-24T21:50:07.793678"
+    },
+    {
+      "test": "方案任务状态-#19",
+      "status": "PASS",
+      "message": "状态: success",
+      "details": null,
+      "timestamp": "2026-03-24T21:50:10.161630"
+    },
+    {
+      "test": "方案字段-scheme_name",
+      "status": "PASS",
+      "message": "存在",
+      "details": null,
+      "timestamp": "2026-03-24T21:50:10.162075"
+    },
+    {
+      "test": "方案字段-scheme_description",
+      "status": "PASS",
+      "message": "存在",
+      "details": null,
+      "timestamp": "2026-03-24T21:50:10.162207"
+    },
+    {
+      "test": "方案字段-devices",
+      "status": "PASS",
+      "message": "存在",
+      "details": null,
+      "timestamp": "2026-03-24T21:50:10.162330"
+    },
+    {
+      "test": "方案字段-total_price",
+      "status": "PASS",
+      "message": "存在",
+      "details": null,
+      "timestamp": "2026-03-24T21:50:10.162447"
+    },
+    {
+      "test": "方案字段-budget_remaining",
+      "status": "PASS",
+      "message": "存在",
+      "details": null,
+      "timestamp": "2026-03-24T21:50:10.162537"
+    },
+    {
+      "test": "方案设备列表",
+      "status": "PASS",
+      "message": "包含12个设备",
+      "details": null,
+      "timestamp": "2026-03-24T21:50:10.162623"
+    },
+    {
+      "test": "设备字段-完整性",
+      "status": "PASS",
+      "message": "设备数据结构正确",
+      "details": null,
+      "timestamp": "2026-03-24T21:50:10.162708"
+    },
+    {
+      "test": "日志上传-功能",
+      "status": "PASS",
+      "message": "上传成功: upload_20260324215007",
+      "details": null,
+      "timestamp": "2026-03-24T21:50:10.571618"
+    },
+    {
+      "test": "日志上传-计数",
+      "status": "PASS",
+      "message": "日志条数: 10",
+      "details": null,
+      "timestamp": "2026-03-24T21:50:10.571802"
+    },
+    {
+      "test": "日志上传-大文件拦截",
+      "status": "PASS",
+      "message": "正确拒绝超大文件(413)",
+      "details": null,
+      "timestamp": "2026-03-24T21:50:11.577113"
+    },
+    {
+      "test": "错误处理-业务错误码",
+      "status": "PASS",
+      "message": "返回错误码: 50001",
+      "details": null,
+      "timestamp": "2026-03-24T21:50:11.966312"
+    }
+  ]
+}

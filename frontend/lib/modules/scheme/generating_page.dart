@@ -88,12 +88,14 @@ class _GeneratingPageState extends State<GeneratingPage>
     final response = await _apiService.post(
       ApiConstants.schemesGenerate,
       body: requestBody,
-    );
+    ).timeout(const Duration(seconds: 30));
 
     if (response.success && response.data != null) {
       _taskId = response.data['task_id'];
+      debugPrint('[方案生成] task_id: $_taskId');
       _pollTaskStatus();
     } else {
+      debugPrint('[方案生成失败] ${response.message}');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(response.message)),

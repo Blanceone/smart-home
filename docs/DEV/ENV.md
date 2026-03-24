@@ -2,6 +2,7 @@
 
 | 版本 | 日期 | 作者 | 状态 |
 |------|------|------|------|
+| v1.1 | 2026-03-24 | 开发工程师 | 更新日志上传接口 |
 | v1.0 | 2026-03-22 | 开发工程师 | 初稿 |
 
 ---
@@ -423,6 +424,7 @@ journalctl -u smart-home-celery -f
 | GET | /api/v1/categories | 分类列表 | 否 |
 | POST | /api/v1/schemes/generate | 生成方案 | 否 |
 | GET | /api/v1/schemes/tasks/{id} | 方案生成状态 | 否 |
+| POST | /api/v1/logs/upload | 上传日志 | 否 |
 
 ---
 

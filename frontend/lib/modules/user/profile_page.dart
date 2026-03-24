@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/services/app_state.dart';
+import '../../core/services/logger_service.dart';
 import '../../core/constants/app_theme.dart';
 import '../../shared/models/questionnaire.dart';
 
@@ -72,6 +73,8 @@ class ProfilePage extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.lg),
               _buildExportButton(context, appState),
+              const SizedBox(height: AppSpacing.lg),
+              _buildLogUploadCard(context),
               const SizedBox(height: AppSpacing.lg),
               _buildDangerZone(context, appState),
             ],
@@ -290,6 +293,73 @@ class ProfilePage extends StatelessWidget {
           SnackBar(content: Text('导出失败: $e')),
         );
       }
+    }
+  }
+
+  Widget _buildLogUploadCard(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppRadius.card),
+        boxShadow: [AppShadows.elevation1],
+      ),
+      child: ListTile(
+        leading: Container(
+          padding: const EdgeInsets.all(AppSpacing.sm),
+          decoration: BoxDecoration(
+            color: AppColors.warning.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(AppRadius.button),
+          ),
+          child: const Icon(Icons.upload_file, color: AppColors.warning),
+        ),
+        title: const Text('上传日志'),
+        subtitle: const Text('将运行日志上传到服务器'),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => _uploadLogs(context),
+      ),
+    );
+  }
+
+  Future<void> _uploadLogs(BuildContext context) async {
+    final logger = LoggerService();
+    final logs = await logger.getLogs();
+
+    if (logs.isEmpty) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('暂无日志可上传')),
+        );
+      }
+      return;
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const AlertDialog(
+        content: Row(
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(width: 16),
+            Text('正在上传日志...'),
+          ],
+        ),
+      ),
+    );
+
+    final success = await logger.uploadLogs(
+      onProgress: (current, total) {},
+    );
+
+    if (context.mounted) {
+      Navigator.pop(context);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(success ? '日志上传成功' : '日志上传失败'),
+          backgroundColor: success ? AppColors.success : AppColors.error,
+        ),
+      );
     }
   }
 }

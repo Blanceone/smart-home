@@ -1,7 +1,7 @@
 # 智能家居系统部署分析报告
 
 **部署时间**: 2026-03-24  
-**版本**: v1.1.0  
+**版本**: v1.2.0  
 **部署结果**: ✅ Success
 
 ---
@@ -278,7 +278,93 @@ systemctl status mysql
 
 ---
 
-## 八、访问地址
+## 九、移动应用构建与部署
+
+### 9.1 构建环境
+
+| 项目 | 值 |
+|------|-----|
+| CI/CD 平台 | GitHub Actions |
+| 工作流文件 | `.github/workflows/build-mobile.yml` |
+| Flutter 版本 | 3.24.0 |
+| Java 版本 | 17 |
+| 构建触发 | push 到 main 分支 |
+
+### 9.2 构建流程
+
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│  代码推送       │ ──▶ │  GitHub Actions │ ──▶ │  APK 构建       │
+│  (main 分支)    │     │  自动触发       │     │  (ubuntu-latest)│
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+                                                        │
+                                                        ▼
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│  用户下载       │ ◀── │  Nginx 托管     │ ◀── │  SCP 部署       │
+│  APK 文件       │     │  静态文件       │     │  到服务器       │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+```
+
+### 9.3 构建配置
+
+```yaml
+# .github/workflows/build-mobile.yml
+env:
+  FLUTTER_VERSION: '3.24.0'
+  JAVA_VERSION: '17'
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - Checkout code
+      - Setup Java 17
+      - Setup Flutter 3.24.0
+      - Get dependencies (flutter pub get)
+      - Build APK (flutter build apk --release)
+      - Upload artifact
+      - Deploy to Server (SCP)
+      - Update latest link
+```
+
+### 9.4 构建产物
+
+| 平台 | 状态 | 构建时间 | 产物大小 | 文件名 |
+|------|------|----------|----------|--------|
+| Android | ✅ 成功 | 4分49秒 | 22.8 MB | smart-home-main.apk |
+| iOS | ⏭️ 跳过 | - | - | 项目未配置 iOS 支持 |
+
+### 9.5 部署信息
+
+| 项目 | 详情 |
+|------|------|
+| 服务器路径 | `/var/www/downloads/smart-home-main.apk` |
+| 软链接 | `/var/www/downloads/smart-home.apk` |
+| 下载地址 | **http://8.137.174.58/downloads/smart-home.apk** |
+| Nginx 配置 | `/etc/nginx/sites-available/smart-home` |
+
+### 9.6 构建问题修复记录
+
+| 问题 | 原因 | 解决方案 |
+|------|------|----------|
+| Brand.name 属性不存在 | 属性名应为 brandName | 修改为 brand.brandName |
+| withValues 方法不存在 | Flutter 3.24.0 不支持 | 改用 withOpacity() |
+| double.tryParse 类型不匹配 | 返回可空类型 | 添加 ?? 0.0 默认值 |
+| getDefaultQuestions 不存在 | 缺少静态方法 | 添加静态方法实现 |
+
+### 9.7 构建历史
+
+| 构建 ID | 时间 | 状态 | 说明 |
+|---------|------|------|------|
+| 23479379752 | 2026-03-24 | ✅ 成功 | Android APK 构建成功 |
+| 23478725914 | 2026-03-24 | ❌ 失败 | getDefaultQuestions 方法不存在 |
+| 23477914403 | 2026-03-24 | ❌ 失败 | double.tryParse 类型不匹配 |
+| 23476535967 | 2026-03-24 | ❌ 失败 | withValues 方法不存在 |
+| 23476423456 | 2026-03-24 | ❌ 失败 | Brand.name 属性不存在 |
+
+---
+
+## 十、访问地址
 
 | 服务 | 地址 |
 |------|------|
@@ -288,13 +374,18 @@ systemctl status mysql
 | 品牌列表 | http://8.137.174.58/api/v1/brands |
 | 商品列表 | http://8.137.174.58/api/v1/products |
 | 方案生成 | http://8.137.174.58/api/v1/schemes/generate |
+| 日志上传 | http://8.137.174.58/api/v1/logs/upload |
+| **APK 下载** | **http://8.137.174.58/downloads/smart-home.apk** |
 
 ---
 
-## 九、部署历史
+## 十一、部署历史
 
 | 日期 | 版本 | 变更内容 |
 |------|------|----------|
+| 2026-03-24 | v1.3.0 | 添加日志上传模块，修复模型关系外键约束 |
+| 2026-03-24 | v1.2.1 | 更新 Nginx 配置，添加 /api/、/health、/docs、/downloads/ 路径 |
+| 2026-03-24 | v1.2.0 | 添加移动应用 CI/CD 构建流程，APK 自动部署到服务器 |
 | 2026-03-24 | v1.1.0 | 添加自动化部署脚本，修复 Celery 配置 |
 | 2026-03-23 | v1.0.1 | 修复 Redis/MySQL 连接地址，增加 AI 超时时间 |
 | 2026-03-22 | v1.0.0 | 初始部署 |

@@ -58,20 +58,38 @@ def get_matching_products(device_type: str, budget_max: float, preferred_brands:
             if brand_ids:
                 query = query.filter(~Product.brand_id.in_(brand_ids))
 
-        product = query.order_by(Product.rating.desc(), Product.sales_count.desc()).first()
+        products = query.all()
+        if not products:
+            return None
 
-        if product:
-            return {
-                "product_id": product.id,
-                "product_name": product.product_name,
-                "brand_id": product.brand_id,
-                "brand_name": product.brand.brand_name if product.brand else None,
-                "price": float(product.price),
-                "image_url": product.image_url,
-                "specs": product.specs
-            }
+        scored_products = []
+        for p in products:
+            rating = float(p.rating) if p.rating else 0
+            sales = int(p.sales_count) if p.sales_count else 0
+            price = float(p.price) if p.price else 0
 
-        return None
+            price_score = 1.0
+            if budget_max > 0 and price <= budget_max:
+                price_score = price / budget_max
+            elif price > budget_max:
+                price_score = 0.5
+
+            score = rating * 0.3 + min(sales / 1000, 10) * 0.2 + (1 - price_score) * 0.5
+
+            scored_products.append((p, score))
+
+        scored_products.sort(key=lambda x: x[1], reverse=True)
+        best_product = scored_products[0][0]
+
+        return {
+            "product_id": best_product.id,
+            "product_name": best_product.product_name,
+            "brand_id": best_product.brand_id,
+            "brand_name": best_product.brand.brand_name if best_product.brand else None,
+            "price": float(best_product.price),
+            "image_url": best_product.image_url,
+            "specs": best_product.specs
+        }
     except Exception as e:
         print(f"Error querying products: {e}")
         return None
@@ -99,11 +117,11 @@ def generate_scheme_task(self, params: Dict[str, Any]):
         total_price = sum(d.get("subtotal", 0) for d in matched_devices)
 
         return {
-            "scheme_name": scheme_data.get("scheme_name", "智能家居方案"),
-            "scheme_description": scheme_data.get("scheme_description", ""),
+            "schemeName": scheme_data.get("scheme_name") or scheme_data.get("schemeName") or "智能家居方案",
+            "schemeDescription": scheme_data.get("scheme_description") or scheme_data.get("schemeDescription") or "",
             "devices": matched_devices,
-            "total_price": total_price,
-            "budget_remaining": params.get("budget_max", 100000) - total_price
+            "totalPrice": total_price,
+            "budgetRemaining": params.get("budget_max", 100000) - total_price
         }
 
     except Exception as e:
@@ -152,7 +170,7 @@ def build_prompt(params: Dict[str, Any]) -> str:
 
 用户住宅信息：
 - 房型：{room_str}
-- 总面积：{total_area}平米
+- 总面积：{params.get("total_area", 0)}平米
 
 居住情况：
 - 居住状态：{living_status}

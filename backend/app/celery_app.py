@@ -5,7 +5,7 @@ celery_app = Celery(
     "smart_home",
     broker=settings.CELERY_BROKER_URL,
     backend=settings.CELERY_RESULT_BACKEND,
-    include=["app.celery_tasks.generation", "app.celery_tasks.crawl"]
+    include=["celery_tasks.generation", "celery_tasks.crawl"]
 )
 
 celery_app.conf.update(

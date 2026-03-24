@@ -8,7 +8,7 @@ class UserPreference(Base):
     __tablename__ = "user_preferences"
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
-    user_id = Column(BigInteger, nullable=True)
+    user_id = Column(BigInteger, ForeignKey("users.id"), nullable=True, index=True)
     budget_min = Column(DECIMAL(12, 2), default=0)
     budget_max = Column(DECIMAL(12, 2), default=100000)
     preferred_brands = Column(JSON, nullable=True)
@@ -16,12 +16,14 @@ class UserPreference(Base):
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
 
+    user = relationship("User", back_populates="preferences")
+
 
 class Questionnaire(Base):
     __tablename__ = "questionnaires"
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
-    user_id = Column(BigInteger, nullable=True)
+    user_id = Column(BigInteger, ForeignKey("users.id"), nullable=True, index=True)
     living_status = Column(String(20), nullable=False)
     resident_count = Column(Integer, default=1)
     has_elderly = Column(Boolean, default=False)
@@ -32,12 +34,14 @@ class Questionnaire(Base):
     knowledge_level = Column(String(20), nullable=True)
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
 
+    user = relationship("User", back_populates="questionnaires")
+
 
 class Scheme(Base):
     __tablename__ = "schemes"
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
-    user_id = Column(BigInteger, nullable=True)
+    user_id = Column(BigInteger, ForeignKey("users.id"), nullable=True, index=True)
     house_id = Column(BigInteger, ForeignKey("houses.id"), nullable=False, index=True)
     scheme_name = Column(String(100), nullable=False)
     description = Column(Text, nullable=True)
@@ -46,6 +50,7 @@ class Scheme(Base):
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
 
+    user = relationship("User", back_populates="schemes")
     house = relationship("House")
     devices = relationship("SchemeDevice", back_populates="scheme", cascade="all, delete-orphan")
 
@@ -72,7 +77,7 @@ class Task(Base):
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     task_id = Column(String(100, collation='utf8mb4_unicode_ci'), unique=True, nullable=False, index=True)
-    user_id = Column(BigInteger, nullable=True)
+    user_id = Column(BigInteger, ForeignKey("users.id"), nullable=True, index=True)
     task_type = Column(String(50), nullable=False)
     status = Column(String(20), default="pending", nullable=False)
     result = Column(JSON, nullable=True)

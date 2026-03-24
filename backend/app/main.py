@@ -2,12 +2,18 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.shared.exceptions import register_exception_handlers
+
+settings.validate_production_config()
+
 from app.modules.product.routes import router as product_router, brand_router, category_router
 from app.modules.scheme.routes import router as scheme_router
 from app.modules.house.routes import router as house_router
+from app.modules.log.routes import router as log_router
 from app.modules.product.models import Brand, Category, Product
-from app.modules.scheme.models import Scheme, SchemeDevice, Task
+from app.modules.scheme.models import Scheme, SchemeDevice, Task, UserPreference, Questionnaire
 from app.modules.house.models import House, Room
+from app.modules.user.models import User
+from app.modules.log.models import DeviceLog
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -35,6 +41,7 @@ app.include_router(product_router)
 app.include_router(brand_router)
 app.include_router(category_router)
 app.include_router(scheme_router)
+app.include_router(log_router)
 
 
 @app.get("/health")

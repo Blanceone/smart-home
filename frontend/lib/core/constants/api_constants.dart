@@ -10,5 +10,7 @@ class ApiConstants {
   static const String brands = '$apiVersion/brands';
   static const String categories = '$apiVersion/categories';
 
+  static const String logsUpload = '$apiVersion/logs/upload';
+
   static const String health = '/health';
 }

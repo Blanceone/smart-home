@@ -49,11 +49,21 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
   }
 
   Future<void> _loadBrands() async {
-    final response = await _apiService.get(ApiConstants.brands);
-    if (response.success && response.data != null) {
-      setState(() {
-        _brands = (response.data as List).map((b) => Brand.fromJson(b)).toList();
-      });
+    try {
+      final response = await _apiService.get(ApiConstants.brands).timeout(
+        const Duration(seconds: 10),
+        onTimeout: () => ApiResponse(success: false, message: '请求超时'),
+      );
+      
+      if (response.success && response.data != null) {
+        setState(() {
+          _brands = (response.data as List).map((b) => Brand.fromJson(b)).toList();
+        });
+      } else {
+        debugPrint('[品牌加载失败] ${response.message}');
+      }
+    } catch (e) {
+      debugPrint('[品牌加载异常] $e');
     }
   }
 
